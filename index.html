@@ -1,38 +1,216 @@
 <!DOCTYPE html>
-
-<html lang="en">
-
+<html lang="ja">
 <head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hiragana ↔ Romaji Quiz</title>
 
-  <meta charset="UTF-8" />
+<style>
+  body {
+    font-family: "Hiragino Kaku Gothic Pro", "Meiryo", sans-serif;
+    background-color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 40px;
+    color: #333;
+    text-align: center;
+  }
 
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  h1 {
+    color: #b23b3b;
+    font-size: 2em;
+    margin-bottom: 20px;
+  }
 
-  <title>Romaji → Hiragana Matching Game</title>
+  #quiz-container {
+    background-color: white;
+    border-radius: 15px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    padding: 30px;
+    width: 90%;
+    max-width: 500px;
+    text-align: center;
+  }
 
-  <link rel="stylesheet" href="style.css" />
+  .question {
+    font-size: 2em;
+    margin-bottom: 25px;
+  }
 
+  .option {
+    display: block;
+    background-color: #ffeaea;
+    border: none;
+    border-radius: 10px;
+    padding: 12px;
+    font-size: 1.3em;
+    width: 100%;
+    max-width: 300px;
+    margin: 10px auto;
+    cursor: pointer;
+    transition: background-color 0.2s;
+  }
+
+  .option:hover {
+    background-color: #f7b6b6;
+  }
+
+  #message {
+    margin-top: 20px;
+    font-weight: bold;
+    font-size: 1.2em;
+  }
+
+  #next {
+    display: none;
+    margin-top: 25px;
+    background-color: #b23b3b;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 10px 20px;
+    font-size: 1.1em;
+    cursor: pointer;
+  }
+
+  #next:hover {
+    background-color: #a03030;
+  }
+
+  #result-gif {
+    width: 250px;
+    margin-top: 20px;
+    border-radius: 12px;
+  }
+</style>
 </head>
 
 <body>
+  <h1>Match words written in Hiragana with their meanings</h1>
 
-  <h1> Match words written in Hiragana with their readings</h1>
+  <div id="quiz-container">
+    <div id="question-number"></div>
+    <div class="question" id="question"></div>
+    <div id="options"></div>
+    <div id="message"></div>
+    <button id="next">Next</button>
+  </div>
 
-  <!-- Quiz container -->
+<script>
+const baseQuestions = [
+  { q: "aoi (blue)", options: ["あおい", "おあい", "あおけ", "おあけ"], correct: "あおい" },
+  { q: "kega (injury)", options: ["けが", "いが", "いか", "けか"], correct: "けが" },
+  { q: "eki (station)", options: ["えき", "いき", "いぎ", "えぎ"], correct: "えき" },
+  { q: "isu (chair)", options: ["いす", "けす", "せす", "えす"], correct: "いす" },
+  { q: "kiku (to listen, to ask)", options: ["きく", "さく", "さぐ", "きぐ"], correct: "きく" },
+  { q: "aji (taste)", options: ["あし", "おじ", "あじ", "おし"], correct: "あじ" },
+  { q: "ai (love)", options: ["あい", "おい", "おけ", "あけ"], correct: "あい" },
+  { q: "ookii (big)", options: ["おおきい", "あおきい", "おおけい", "おきい"], correct: "おおきい" },
+  { q: "akai (red)", options: ["あかい", "おかい", "あけい", "あかけ"], correct: "あかい" },
+  { q: "sushi", options: ["すし", "すじ", "そし", "しす"], correct: "すし" },
+  { q: "ishi (intention)", options: ["いし", "あし", "うし", "いじ"], correct: "いし" },
+  { q: "eizo (picture)", options: ["えいぞ", "えぞ", "えいそ", "えいず"], correct: "えいぞ" },
+  { q: "seiji (politics)", options: ["せいじ", "せじ", "せじい", "しじ"], correct: "せいじ" },
+  { q: "keizai (economics)", options: ["けいざい", "けざい", "けいさい", "けいざ"], correct: "けいざい" },
+  { q: "kaze (wind)", options: ["かぜ", "かせ", "がせ", "がぜ"], correct: "かぜ" },
+  { q: "gaikoku (abroad)", options: ["がいこく", "かいこく", "がいかく", "がいく"], correct: "がいこく" },
+  { q: "jiki (period of time)", options: ["じき", "しき", "じぎ", "じけ"], correct: "じき" },
+  { q: "chiisai (small)", options: ["ちいさい", "ちさい", "ちいせい", "ちさ"], correct: "ちいさい" },
+  { q: "kazu (quantity)", options: ["かず", "かす", "かつ", "かじ"], correct: "かず" },
+  { q: "okashii (weird)", options: ["おかしい", "あかしい", "おかし", "おかせい"], correct: "おかしい" }
+];
 
-  <div id="quiz"></div>
+let currentQuestion = 0;
+let score = 0;
 
-  <!-- Button for Check / Next / Finish -->
+const questionEl = document.getElementById("question");
+const optionsEl = document.getElementById("options");
+const messageEl = document.getElementById("message");
+const nextBtn = document.getElementById("next");
+const questionNumberEl = document.getElementById("question-number");
 
-  <button id="submit">Check</button>
+function showQuestion() {
+  const q = baseQuestions[currentQuestion];
+  questionNumberEl.textContent = `Question ${currentQuestion + 1} of ${baseQuestions.length}`;
+  questionEl.textContent = q.q;
+  optionsEl.innerHTML = "";
+  messageEl.textContent = "";
+  nextBtn.style.display = "none";
 
-  <div id="result"></div>
+  q.options.forEach(option => {
+    const btn = document.createElement("button");
+    btn.textContent = option;
+    btn.classList.add("option");
+    btn.onclick = () => checkAnswer(option);
+    optionsEl.appendChild(btn);
+  });
+}
 
-  <!-- JavaScript -->
+function checkAnswer(selected) {
+  const q = baseQuestions[currentQuestion];
+  const buttons = document.querySelectorAll(".option");
 
-  <script src="script.js"></script>
+  buttons.forEach(btn => {
+    btn.disabled = true;
+    if (btn.textContent === q.correct) {
+      btn.style.backgroundColor = "#b2e6b2";
+    }
+    if (btn.textContent === selected && selected !== q.correct) {
+      btn.style.backgroundColor = "#f7b6b6";
+    }
+  });
 
+  if (selected === q.correct) {
+    score++;
+    messageEl.textContent = "✅ Correct!";
+    messageEl.style.color = "#2e7d32";
+  } else {
+    messageEl.textContent = `❌ Wrong! Correct answer: ${q.correct}`;
+    messageEl.style.color = "#b23b3b";
+  }
+
+  nextBtn.style.display = "inline-block";
+}
+
+nextBtn.addEventListener("click", () => {
+  currentQuestion++;
+  if (currentQuestion < baseQuestions.length) {
+    showQuestion();
+  } else {
+    showResults();
+  }
+});
+
+function showResults() {
+  questionNumberEl.textContent = "";
+  questionEl.textContent = "Quiz Complete!";
+  optionsEl.innerHTML = "";
+  nextBtn.style.display = "none";
+
+  messageEl.textContent = `Your score: ${score} / ${baseQuestions.length}`;
+  messageEl.style.color = "#333";
+
+  const img = document.createElement("img");
+  img.id = "result-gif";
+
+  // ↓ Replace these URLs with your actual GitHub GIF links:
+  const lowGif = "https://github.com/yourusername/yourrepo/blob/main/low.gif?raw=true";
+  const midGif = "https://github.com/yourusername/yourrepo/blob/main/mid.gif?raw=true";
+  const highGif = "https://github.com/yourusername/yourrepo/blob/main/high.gif?raw=true";
+
+  if (score <= 8) {
+    img.src = lowGif;
+  } else if (score <= 16) {
+    img.src = midGif;
+  } else {
+    img.src = highGif;
+  }
+
+  optionsEl.appendChild(img);
+}
+
+showQuestion();
+</script>
 </body>
-
 </html>
-
