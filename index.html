@@ -222,7 +222,26 @@ optionsEl.appendChild(restartBtn);
 
 }
 
-showQuestion();
+function showQuestion() {
+  const q = baseQuestions[currentQuestion];
+  questionNumberEl.textContent = `Question ${currentQuestion + 1} of ${baseQuestions.length}`;
+  questionEl.textContent = q.q;
+  optionsEl.innerHTML = "";
+  messageEl.textContent = "";
+  nextBtn.style.display = "none";
+
+  // 🔀 Shuffle the options
+  const shuffledOptions = [...q.options].sort(() => Math.random() - 0.5);
+
+  shuffledOptions.forEach(option => {
+    const btn = document.createElement("button");
+    btn.textContent = option;
+    btn.classList.add("option");
+    btn.onclick = () => checkAnswer(option);
+    optionsEl.appendChild(btn);
+  });
+}
+
 </script>
 </body>
 </html>
