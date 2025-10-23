@@ -193,6 +193,8 @@ function showResults() {
 
   const img = document.createElement("img");
   img.id = "result-gif";
+  const motivation = document.createElement("div");
+  motivation.id = "motivation";
 
   // ↓ Replace these URLs with your actual GitHub GIF links:
   const lowGif = "https://github.com/yourusername/yourrepo/blob/main/low.gif?raw=true";
@@ -201,13 +203,18 @@ function showResults() {
 
   if (score <= 8) {
     img.src = lowGif;
+    motivation.textContent = "Keep going! Practice makes perfect 💪";
   } else if (score <= 16) {
     img.src = midGif;
+    motivation.textContent = "Good job! You're improving fast 🌸";
   } else {
     img.src = highGif;
+    motivation.textContent = "Amazing! You're a Hiragana master 🎉";
   }
 
   optionsEl.appendChild(img);
+  optionsEl.appendChild(motivation);
+}
 }
 
 showQuestion();
