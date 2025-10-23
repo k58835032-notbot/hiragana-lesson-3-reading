@@ -1,0 +1,90 @@
+/* ==== General Page Layout ==== */
+body {
+  font-family: 'Segoe UI', sans-serif;
+  background: #ffffff;
+  color: #333;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  padding: 30px;
+  text-align: center;
+}
+
+/* ==== Title ==== */
+h1 {
+  color: #b04545;
+  font-size: 1.8rem;
+  margin-bottom: 30px;
+}
+
+/* ==== Quiz Card ==== */
+#quiz {
+  background: #fff;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  padding: 30px 40px;
+  width: 320px;
+  max-width: 90%;
+}
+
+/* ==== Question Text ==== */
+.question {
+  margin-bottom: 25px;
+}
+
+.question p {
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+/* ==== Answer Buttons ==== */
+.options {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+button.option {
+  background-color: #fce4e4;
+  color: #333;
+  border: 1px solid #f8b6b6;
+  border-radius: 8px;
+  padding: 12px 0;
+  width: 100%;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+button.option:hover {
+  background-color: #f8b6b6;
+  transform: scale(1.03);
+}
+
+/* ==== Submit Button ==== */
+#submit {
+  margin-top: 25px;
+  background-color: #b04545;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px 25px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+#submit:hover {
+  background-color: #933b3b;
+  transform: scale(1.03);
+}
+
+/* ==== Result Text ==== */
+#result {
+  margin-top: 15px;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
