@@ -214,6 +214,12 @@ function showResults() {
 
   optionsEl.appendChild(img);
   optionsEl.appendChild(motivation);
+  const restartBtn = document.createElement("button");
+restartBtn.textContent = "Restart Quiz";
+restartBtn.id = "next";
+restartBtn.onclick = () => location.reload();
+optionsEl.appendChild(restartBtn);
+
 }
 
 showQuestion();
